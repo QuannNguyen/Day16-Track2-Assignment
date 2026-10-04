@@ -149,9 +149,21 @@ kaggle datasets download -d mlg-ulb/creditcardfraud --unzip -p ~/ml-benchmark/
 
 ### Bước 4.4: Huấn luyện và Inference với LightGBM
 
-Viết một script Python (ví dụ `benchmark.py`) thực hiện:
+Trong thư mục `terraform/`, chạy script benchmark trên dataset đã tải ở bước 4.3:
+
+```bash
+python3 benchmark.py --data ~/ml-benchmark/creditcard.csv
+```
+
+Script cũng tự tìm `creditcard.csv` trong thư mục hiện tại, thư mục chứa script
+hoặc `~/ml-benchmark/` nếu không truyền `--data`. Kết quả được ghi vào
+`terraform/benchmark_result.json` theo mặc định; có thể đổi vị trí bằng
+`--output /path/to/benchmark_result.json`.
+
+Script thực hiện:
 1. Load dataset và tách tập train/test.
-2. Huấn luyện một `LGBMClassifier` (hoặc `lightgbm.train`) để phát hiện gian lận.
+2. Huấn luyện `LGBMClassifier` để phát hiện gian lận, dùng validation split riêng
+   để early stopping và giữ test split cho đánh giá cuối.
 3. Đo thời gian load data và thời gian training.
 4. Đánh giá model trên tập test: AUC-ROC, Accuracy, F1-Score, Precision, Recall.
 5. Đo **inference latency** (dự đoán 1 dòng) và **inference throughput** (dự đoán 1000 dòng).
